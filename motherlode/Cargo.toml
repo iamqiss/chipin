@@ -11,6 +11,7 @@ tower = "0.4"
 tower-http = { version = "0.5", features = ["cors", "trace", "compression-gzip"] }
 tokio = { version = "1", features = ["full"] }
 hyper = "1"
+hex = "0.4"
 
 # Database
 sea-orm = { version = "0.12", features = ["sqlx-postgres", "runtime-tokio-rustls", "macros"] }
