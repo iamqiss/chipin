@@ -456,6 +456,7 @@ pub async fn upsert_session(
     ip_address: Option<&str>,
     user_agent: Option<&str>,
 ) -> AppResult<()> {
+    let ip_network = ip_address.and_then(|s| s.parse::<ipnetwork::IpNetwork>().ok());
     sqlx::query!(
         r#"
         INSERT INTO user_sessions (user_id, device_id, ip_address, user_agent, last_seen_at, created_at)
