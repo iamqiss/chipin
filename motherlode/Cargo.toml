@@ -18,7 +18,7 @@ sea-orm = { version = "0.12", features = ["sqlx-postgres", "runtime-tokio-rustls
 sqlx = { version = "0.7", features = ["runtime-tokio-rustls", "postgres", "ipnetwork", "uuid", "chrono", "migrate"] }
 
 # Redis
-redis = { version = "0.25", features = ["tokio-comp", "connection-manager"] }
+redis = { version = "0.25", features = ["tokio-comp", "connection-manager", "tls-rustls"] }
 
 # Auth
 jsonwebtoken = "9"
