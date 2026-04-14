@@ -118,7 +118,7 @@ type TranslationKeys = {
   thisWeek: string;
 };
 
-type Translations = Record<Language, TranslationKeys>;
+export type Translations = Record<Language, TranslationKeys>;
 
 export const translations: Translations = {
   en: {
