@@ -77,7 +77,7 @@ export function WithdrawModal({ visible, onClose }: { visible: boolean; onClose:
   const penalty         = !isBalanceSource && !isNaN(parsedAmount) ? parsedAmount * EARLY_WITHDRAWAL_PENALTY : 0;
   const netAmount       = !isNaN(parsedAmount) ? parsedAmount - penalty : 0;
 
-  const maxAmount = isBalanceSource ? userBalance : (selectedStokvel?.totalSaved ?? 0) / selectedStokvel?.members.length ?? 0;
+  const maxAmount = isBalanceSource ? userBalance : (selectedStokvel?.totalSaved ?? 0) / selectedStokvel?.members?.length ?? 1;
   const canNextAmount = !isNaN(parsedAmount) && parsedAmount >= 50 && parsedAmount <= maxAmount;
 
   useEffect(() => {
