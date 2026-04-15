@@ -1,0 +1,62 @@
+syntax = "proto3";
+package stockfair.fraud;
+
+import "proto/common.proto";
+
+service FraudService {
+  rpc GetFraudSettings    (stockfair.common.Empty)       returns (FraudSettings);
+  rpc UpdateFraudSettings (UpdateFraudSettingsRequest)    returns (FraudSettings);
+  rpc GetAlerts           (stockfair.common.Empty)       returns (AlertList);
+  rpc ResolveAlert        (ResolveAlertRequest)           returns (stockfair.common.Empty);
+  rpc GetFeatureLock      (stockfair.common.Empty)       returns (FeatureLock);
+  rpc UpdateFeatureLock   (UpdateFeatureLockRequest)      returns (FeatureLock);
+}
+
+message FraudSettings {
+  bool behavioral_analytics = 1;
+  bool sim_swap_detection   = 2;
+  bool jailbreak_detection  = 3;
+  bool geofencing           = 4;
+  string updated_at         = 5;
+}
+
+message UpdateFraudSettingsRequest {
+  bool behavioral_analytics = 1;
+  bool sim_swap_detection   = 2;
+  bool jailbreak_detection  = 3;
+  bool geofencing           = 4;
+}
+
+message FraudAlert {
+  string id       = 1;
+  string type     = 2;     // sim_swap | geo_anomaly | behavior | jailbreak
+  string severity = 3;     // low | medium | high | critical
+  string detail   = 4;
+  bool   resolved = 5;
+  string created_at = 6;
+}
+
+message AlertList {
+  repeated FraudAlert alerts = 1;
+}
+
+message ResolveAlertRequest {
+  string alert_id = 1;
+}
+
+message FeatureLock {
+  bool lock_withdrawals     = 1;
+  bool lock_payments        = 2;
+  bool lock_statements      = 3;
+  bool lock_linked_accounts = 4;
+  bool lock_investments     = 5;
+}
+
+message UpdateFeatureLockRequest {
+  bool lock_withdrawals     = 1;
+  bool lock_payments        = 2;
+  bool lock_statements      = 3;
+  bool lock_linked_accounts = 4;
+  bool lock_investments     = 5;
+  string current_pin        = 6; // required to change lock settings
+}

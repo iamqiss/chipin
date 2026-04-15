@@ -1,0 +1,150 @@
+syntax = "proto3";
+package stockfair.auth;
+
+import "proto/common.proto";
+
+// ── Service ───────────────────────────────────────────────────────────────────
+
+service AuthService {
+  // Registration
+  rpc RegisterStep1 (RegisterStep1Request)  returns (RegisterStep1Response);
+  rpc RegisterStep2 (RegisterStep2Request)  returns (RegisterStep2Response);
+  rpc RegisterStep3 (RegisterStep3Request)  returns (CommonResponse);
+  rpc RegisterStep4 (RegisterStep4Request)  returns (AuthTokenResponse);
+
+  // OTP
+  rpc SendOtp    (SendOtpRequest)    returns (SendOtpResponse);
+  rpc VerifyOtp  (VerifyOtpRequest)  returns (VerifyOtpResponse);
+
+  // Session
+  rpc SignIn     (SignInRequest)     returns (AuthTokenResponse);
+  rpc SignOut    (SignOutRequest)    returns (CommonResponse);
+  rpc RefreshToken (RefreshRequest) returns (TokenPairResponse);
+
+  // Password reset
+  rpc ForgotPassword (ForgotPasswordRequest) returns (SendOtpResponse);
+  rpc ResetPassword  (ResetPasswordRequest)  returns (CommonResponse);
+
+  // Profile
+  rpc GetMe      (stockfair.common.Empty)    returns (UserProfile);
+  rpc UpdateProfile (UpdateProfileRequest)   returns (UserProfile);
+}
+
+// ── Messages ──────────────────────────────────────────────────────────────────
+
+message UserProfile {
+  string id              = 1;
+  string phone           = 2;
+  string email           = 3;
+  string full_name       = 4;
+  string avatar_url      = 5;
+  string language        = 6;
+  string theme           = 7;
+  bool   is_kyc_verified = 8;
+  string created_at      = 9;
+}
+
+message RegisterStep1Request {
+  string first_name    = 1;
+  string last_name     = 2;
+  string date_of_birth = 3; // DD/MM/YYYY
+  string gender        = 4;
+}
+
+message RegisterStep1Response {
+  string session_key = 1;
+  string message     = 2;
+}
+
+message RegisterStep2Request {
+  string session_key      = 1;
+  string phone            = 2;
+  string email            = 3;
+  string password         = 4;
+  string confirm_password = 5;
+}
+
+message RegisterStep2Response {
+  string phone   = 1;
+  string message = 2;
+}
+
+message RegisterStep3Request {
+  string phone    = 1;
+  string language = 2;
+}
+
+message RegisterStep4Request {
+  string          phone          = 1;
+  repeated string interests      = 2;
+  string          theme          = 3;
+  bool            terms_accepted = 4;
+}
+
+message SendOtpRequest {
+  string phone   = 1;
+  string purpose = 2; // register | reset_password | withdraw
+}
+
+message SendOtpResponse {
+  string message            = 1;
+  uint32 expires_in_seconds = 2;
+  string debug_otp          = 3; // non-empty in dev only
+}
+
+message VerifyOtpRequest {
+  string phone   = 1;
+  string purpose = 2;
+  string code    = 3;
+}
+
+message VerifyOtpResponse {
+  string otp_token = 1;
+  string message   = 2;
+}
+
+message SignInRequest {
+  string identifier = 1; // phone or email
+  string password   = 2;
+}
+
+message SignOutRequest {
+  string refresh_token = 1;
+}
+
+message RefreshRequest {
+  string refresh_token = 1;
+}
+
+message AuthTokenResponse {
+  string      access_token  = 1;
+  string      refresh_token = 2;
+  UserProfile user          = 3;
+}
+
+message TokenPairResponse {
+  string access_token  = 1;
+  string refresh_token = 2;
+}
+
+message ForgotPasswordRequest {
+  string phone = 1;
+}
+
+message ResetPasswordRequest {
+  string phone                = 1;
+  string otp_token            = 2;
+  string new_password         = 3;
+  string confirm_new_password = 4;
+}
+
+message UpdateProfileRequest {
+  string full_name = 1;
+  string email     = 2;
+  string language  = 3;
+  string theme     = 4;
+}
+
+message CommonResponse {
+  string message = 1;
+}

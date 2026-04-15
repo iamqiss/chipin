@@ -1,0 +1,35 @@
+syntax = "proto3";
+package stockfair.common;
+
+// ── Pagination ────────────────────────────────────────────────────────────────
+
+message PageRequest {
+  uint32 page     = 1;
+  uint32 per_page = 2;
+}
+
+message PageMeta {
+  uint32 page       = 1;
+  uint32 per_page   = 2;
+  uint32 total      = 3;
+  uint32 total_pages = 4;
+}
+
+// ── Money ─────────────────────────────────────────────────────────────────────
+// All amounts in South African Rand cents (integer) to avoid float precision.
+
+message Money {
+  int64  cents    = 1;  // e.g. 50000 = R500.00
+  string currency = 2;  // always "ZAR" for now
+}
+
+// ── Timestamps ────────────────────────────────────────────────────────────────
+
+message Timestamp {
+  int64 seconds = 1;
+  int32 nanos   = 2;
+}
+
+// ── Empty ─────────────────────────────────────────────────────────────────────
+
+message Empty {}

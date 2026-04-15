@@ -1,0 +1,89 @@
+syntax = "proto3";
+package stockfair.messages;
+
+import "proto/common.proto";
+
+service MessageService {
+  rpc ListChats        (stockfair.common.Empty)   returns (ChatList);
+  rpc GetMessages      (GetMessagesRequest)         returns (MessageList);
+  rpc SendMessage      (SendMessageRequest)         returns (Message);
+
+  // Bi-directional streaming for real-time group chat
+  rpc ChatStream       (stream SendMessageRequest) returns (stream Message);
+
+  // Pre-order votes in chat
+  rpc CreateOrderVote  (CreateVoteRequest)          returns (OrderVoteCard);
+  rpc GetOrderVote     (GetVoteRequest)              returns (OrderVoteCard);
+}
+
+enum MessageType {
+  TEXT        = 0;
+  VOICE_NOTE  = 1;
+  SYSTEM      = 2;
+  ORDER_VOTE  = 3;
+  PAYOUT_NOTICE = 4;
+}
+
+message Message {
+  string      id         = 1;
+  string      stokvel_id = 2;
+  string      sender_id  = 3;
+  string      sender_name = 4;
+  MessageType type       = 5;
+  string      content    = 6;
+  string      media_url  = 7;
+  string      created_at = 8;
+  OrderVoteCard vote_card = 9; // only set when type = ORDER_VOTE
+}
+
+message GetMessagesRequest {
+  string stokvel_id                 = 1;
+  stockfair.common.PageRequest page = 2;
+}
+
+message MessageList {
+  repeated Message               messages = 1;
+  stockfair.common.PageMeta meta         = 2;
+}
+
+message SendMessageRequest {
+  string      stokvel_id = 1;
+  MessageType type       = 2;
+  string      content    = 3;
+  string      media_url  = 4;
+}
+
+message Chat {
+  string  stokvel_id   = 1;
+  string  stokvel_name = 2;
+  string  last_message = 3;
+  string  last_message_at = 4;
+  int32   unread_count = 5;
+  bool    has_voice_note = 6;
+}
+
+message ChatList {
+  repeated Chat chats = 1;
+}
+
+message CreateVoteRequest {
+  string   stokvel_id  = 1;
+  string   order_id    = 2;
+}
+
+message GetVoteRequest {
+  string order_id = 1;
+}
+
+message OrderVoteCard {
+  string   order_id     = 1;
+  string   retailer_name = 2;
+  string   title        = 3;
+  repeated string items = 4;
+  int64    total_cents  = 5;
+  int32    yes_votes    = 6;
+  int32    no_votes     = 7;
+  int32    votes_needed = 8;
+  double   vote_pct     = 9;
+  string   status       = 10;
+}

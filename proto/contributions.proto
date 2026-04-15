@@ -1,0 +1,86 @@
+syntax = "proto3";
+package stockfair.contributions;
+
+import "proto/common.proto";
+
+service ContributionService {
+  rpc Contribute        (ContributeRequest)       returns (Contribution);
+  rpc ListContributions (ListContribRequest)       returns (ContributionList);
+  rpc GetContribution   (GetContribRequest)        returns (Contribution);
+  rpc AutoPaySetup      (AutoPayRequest)           returns (AutoPayResponse);
+
+  // Payouts
+  rpc GetPayoutSchedule (GetPayoutRequest)         returns (PayoutSchedule);
+  rpc ProcessPayout     (ProcessPayoutRequest)     returns (Payout);
+}
+
+enum ContributionStatus {
+  PENDING  = 0;
+  PAID     = 1;
+  OVERDUE  = 2;
+  WAIVED   = 3;
+}
+
+message Contribution {
+  string             id          = 1;
+  string             stokvel_id  = 2;
+  string             user_id     = 3;
+  stockfair.common.Money amount  = 4;
+  string             due_date    = 5;
+  string             paid_at     = 6;
+  ContributionStatus status      = 7;
+  stockfair.common.Money fine    = 8;
+  string             payment_ref = 9;
+}
+
+message ContributeRequest {
+  string stokvel_id = 1;
+  int64  amount_cents = 2;
+}
+
+message ListContribRequest {
+  string stokvel_id              = 1;
+  stockfair.common.PageRequest page = 2;
+}
+
+message ContributionList {
+  repeated Contribution          contributions = 1;
+  stockfair.common.PageMeta meta             = 2;
+}
+
+message GetContribRequest {
+  string contribution_id = 1;
+}
+
+message AutoPayRequest {
+  string stokvel_id  = 1;
+  bool   is_enabled  = 2;
+}
+
+message AutoPayResponse {
+  string stokvel_id = 1;
+  bool   is_enabled = 2;
+  string message    = 3;
+}
+
+message GetPayoutRequest {
+  string stokvel_id = 1;
+}
+
+message Payout {
+  string id           = 1;
+  string stokvel_id   = 2;
+  string recipient_id = 3;
+  stockfair.common.Money amount = 4;
+  string scheduled_for = 5;
+  string paid_at       = 6;
+  string status        = 7;
+}
+
+message PayoutSchedule {
+  repeated Payout payouts = 1;
+}
+
+message ProcessPayoutRequest {
+  string payout_id = 1;
+}

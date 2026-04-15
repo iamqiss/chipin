@@ -1,0 +1,43 @@
+syntax = "proto3";
+package stockfair.fairscore;
+
+import "proto/common.proto";
+
+service FairScoreService {
+  rpc GetMyScore       (stockfair.common.Empty)    returns (FairScore);
+  rpc GetScoreHistory  (ScoreHistoryRequest)        returns (ScoreHistory);
+  rpc GetPlatformStats (stockfair.common.Empty)    returns (PlatformStats);
+}
+
+message FairScore {
+  string id              = 1;
+  string user_id         = 2;
+  int32  score           = 3;
+  string tier            = 4; // building | fair | good | very_good | excellent
+  int32  payment_history = 5;
+  int32  consistency     = 6;
+  int32  group_activity  = 7;
+  int32  member_tenure   = 8;
+  string updated_at      = 9;
+}
+
+message ScoreHistoryRequest {
+  int32 months = 1; // last N months
+}
+
+message ScoreEntry {
+  int32  score      = 1;
+  int32  delta      = 2;
+  string reason     = 3;
+  string recorded_at = 4;
+}
+
+message ScoreHistory {
+  repeated ScoreEntry entries = 1;
+}
+
+message PlatformStats {
+  double average_score = 1;
+  double top_10_pct    = 2;
+  int32  your_percentile = 3;
+}

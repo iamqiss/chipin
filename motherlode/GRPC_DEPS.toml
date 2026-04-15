@@ -1,0 +1,11 @@
+# Add these to motherlode/Cargo.toml [dependencies]
+
+tonic         = { version = "0.12", features = ["transport", "tls"] }
+tonic-web     = "0.12"
+prost         = "0.13"
+prost-types   = "0.13"
+
+# Add these to motherlode/Cargo.toml [build-dependencies]
+
+tonic-build   = "0.12"
+prost-build   = "0.13"

@@ -1,0 +1,19 @@
+[workspace]
+members = [
+    "motherlode",
+    "speedcrime",
+]
+resolver = "2"
+
+# Shared dependency versions — keeps motherlode and speedcrime in sync
+[workspace.dependencies]
+tonic       = { version = "0.12", features = ["transport"] }
+prost       = "0.13"
+prost-types = "0.13"
+tokio       = { version = "1", features = ["full"] }
+serde       = { version = "1", features = ["derive"] }
+serde_json  = "1"
+anyhow      = "1"
+tracing     = "0.1"
+uuid        = { version = "1", features = ["v4"] }
+chrono      = { version = "0.4", features = ["serde"] }

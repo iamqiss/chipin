@@ -1,0 +1,164 @@
+syntax = "proto3";
+package stockfair.stokvels;
+
+import "proto/common.proto";
+
+service StokvelService {
+  rpc CreateStokvel    (CreateStokvelRequest)    returns (Stokvel);
+  rpc GetStokvel       (GetStokvelRequest)       returns (Stokvel);
+  rpc ListMyStokvals   (ListMyStokvelRequest)    returns (StokvelList);
+  rpc JoinStokvel      (JoinRequest)             returns (MembershipResponse);
+  rpc LeaveStokvel     (LeaveRequest)            returns (stockfair.common.CommonResponse);
+  rpc GetMembers       (GetMembersRequest)       returns (MemberList);
+  rpc GetGroupPot      (GetStokvelRequest)       returns (GroupPot);
+
+  // Multi-sig approval
+  rpc RequestMultiSig  (MultiSigRequest)         returns (MultiSigApproval);
+  rpc ApproveMultiSig  (ApproveMultiSigRequest)  returns (MultiSigApproval);
+
+  // Streaming: real-time contribution updates
+  rpc WatchContributions (GetStokvelRequest) returns (stream ContributionEvent);
+}
+
+// ── Types ─────────────────────────────────────────────────────────────────────
+
+enum StokvelType {
+  GROCERY    = 0;
+  ROTATING   = 1;
+  BURIAL     = 2;
+  INVESTMENT = 3;
+  SAVINGS    = 4;
+}
+
+enum StokvelStatus {
+  ACTIVE = 0;
+  PAUSED = 1;
+  CLOSED = 2;
+}
+
+enum MemberRole {
+  MEMBER       = 0;
+  CHAIRPERSON  = 1;
+  SECRETARY    = 2;
+  TREASURER    = 3;
+}
+
+message Stokvel {
+  string              id                  = 1;
+  string              name                = 2;
+  StokvelType         type                = 3;
+  StokvelStatus       status              = 4;
+  stockfair.common.Money contribution_amount = 5;
+  int32               contribution_day    = 6;
+  int32               max_members         = 7;
+  string              created_by          = 8;
+  string              created_at          = 9;
+  int32               member_count        = 10;
+  stockfair.common.Money total_savings    = 11;
+  string              next_payout_date    = 12;
+  double              progress_pct        = 13;
+  bool                is_overdue          = 14;
+}
+
+message CreateStokvelRequest {
+  string   name                = 1;
+  StokvelType type             = 2;
+  int64    contribution_cents  = 3;
+  int32    contribution_day    = 4;
+  int32    max_members         = 5;
+  string   rules               = 6;
+}
+
+message GetStokvelRequest {
+  string stokvel_id = 1;
+}
+
+message ListMyStokvelRequest {
+  stockfair.common.PageRequest page = 1;
+}
+
+message StokvelList {
+  repeated Stokvel        stokvels = 1;
+  stockfair.common.PageMeta meta   = 2;
+}
+
+message JoinRequest {
+  string stokvel_id = 1;
+  string message    = 2;
+}
+
+message MembershipResponse {
+  string stokvel_id = 1;
+  string user_id    = 2;
+  string status     = 3; // pending | active
+  string message    = 4;
+}
+
+message LeaveRequest {
+  string stokvel_id = 1;
+}
+
+message Member {
+  string     user_id    = 1;
+  string     full_name  = 2;
+  string     phone      = 3;
+  MemberRole role       = 4;
+  string     status     = 5;
+  int32      position   = 6;  // rotation position
+  int32      fair_score = 7;
+  string     joined_at  = 8;
+}
+
+message GetMembersRequest {
+  string stokvel_id = 1;
+}
+
+message MemberList {
+  repeated Member members = 1;
+}
+
+message GroupPot {
+  string                 stokvel_id    = 1;
+  stockfair.common.Money balance       = 2;
+  stockfair.common.Money target        = 3;
+  double                 progress_pct  = 4;
+  string                 next_payout   = 5;
+  int32                  paid_count    = 6;
+  int32                  pending_count = 7;
+  int32                  overdue_count = 8;
+}
+
+message MultiSigRequest {
+  string stokvel_id    = 1;
+  string action_type   = 2; // withdrawal | bulk_order | rule_change
+  bytes  action_payload = 3;
+}
+
+message MultiSigApproval {
+  string id             = 1;
+  string stokvel_id     = 2;
+  string action_type    = 3;
+  int32  approvals      = 4;
+  int32  required       = 5;
+  string status         = 6; // pending | approved | rejected
+}
+
+message ApproveMultiSigRequest {
+  string approval_id = 1;
+  bool   approved    = 2;
+}
+
+// Streaming event
+message ContributionEvent {
+  string stokvel_id   = 1;
+  string user_id      = 2;
+  string full_name    = 3;
+  string event_type   = 4; // paid | overdue | pending
+  int64  amount_cents = 5;
+  string timestamp    = 6;
+}
+
+// Re-export CommonResponse for use without full path
+message CommonResponse {
+  string message = 1;
+}

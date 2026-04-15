@@ -1,0 +1,14 @@
+# Add these to speedcrime/Cargo.toml [dependencies]
+
+tonic         = { version = "0.12", features = ["transport"] }
+prost         = "0.13"
+prost-types   = "0.13"
+tokio         = { version = "1", features = ["full"] }
+
+# For WASM grpc-web (native stays with tonic transport)
+# tonic-web-wasm-client = "0.6"  # enable only for WASM target
+
+# Add these to speedcrime/Cargo.toml [build-dependencies]
+
+tonic-build   = "0.12"
+prost-build   = "0.13"

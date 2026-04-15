@@ -1,0 +1,91 @@
+syntax = "proto3";
+package stockfair.wallet;
+
+import "proto/common.proto";
+
+service WalletService {
+  rpc GetWallet     (stockfair.common.Empty)   returns (Wallet);
+  rpc Deposit       (DepositRequest)            returns (Transaction);
+  rpc Withdraw      (WithdrawRequest)           returns (Transaction);
+  rpc Transfer      (TransferRequest)           returns (Transaction);
+  rpc GetHistory    (HistoryRequest)            returns (TransactionList);
+  rpc GetTransaction (GetTxRequest)             returns (Transaction);
+
+  // Streaming: real-time wallet updates
+  rpc WatchWallet   (stockfair.common.Empty)   returns (stream WalletEvent);
+}
+
+message Wallet {
+  string                 id       = 1;
+  string                 user_id  = 2;
+  stockfair.common.Money balance  = 3;
+  string                 updated_at = 4;
+}
+
+enum TxType {
+  DEPOSIT      = 0;
+  WITHDRAWAL   = 1;
+  CONTRIBUTION = 2;
+  PAYOUT       = 3;
+  TRANSFER     = 4;
+  REFUND       = 5;
+  FEE          = 6;
+}
+
+enum TxStatus {
+  TX_PENDING   = 0;
+  TX_COMPLETED = 1;
+  TX_FAILED    = 2;
+  TX_REVERSED  = 3;
+}
+
+message Transaction {
+  string                 id         = 1;
+  string                 user_id    = 2;
+  TxType                 type       = 3;
+  stockfair.common.Money amount     = 4;
+  stockfair.common.Money fee        = 5;
+  TxStatus               status     = 6;
+  string                 reference  = 7;
+  string                 stokvel_id = 8;
+  string                 created_at = 9;
+}
+
+message DepositRequest {
+  int64  amount_cents = 1;
+  string reference    = 2;
+}
+
+message WithdrawRequest {
+  int64  amount_cents     = 1;
+  string bank_account_id  = 2;
+  string pin              = 3; // feature lock PIN if enabled
+}
+
+message TransferRequest {
+  string to_user_id   = 1;
+  int64  amount_cents = 2;
+  string description  = 3;
+}
+
+message HistoryRequest {
+  string                    filter = 1; // all | contributions | payouts | transfers
+  stockfair.common.PageRequest page = 2;
+}
+
+message TransactionList {
+  repeated Transaction          transactions = 1;
+  stockfair.common.PageMeta meta           = 2;
+}
+
+message GetTxRequest {
+  string transaction_id = 1;
+}
+
+message WalletEvent {
+  string                 event_type = 1; // deposit | withdrawal | contribution | payout
+  stockfair.common.Money amount     = 2;
+  string                 description = 3;
+  string                 timestamp  = 4;
+  stockfair.common.Money new_balance = 5;
+}
