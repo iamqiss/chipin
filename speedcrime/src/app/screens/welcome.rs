@@ -39,7 +39,7 @@ pub fn welcome_screen(ctx: &WindowedContext) -> impl ElementBuilder {
                         .square(80.0)
                         .rounded(Theme::radius_xl())
                         .bg(theme.accent)
-                        .flex_center()
+                        .self_center()
                         .child(
                             text("SF")
                                 .size(32.0)
@@ -93,7 +93,7 @@ pub fn welcome_screen(ctx: &WindowedContext) -> impl ElementBuilder {
                         .h(54.0)
                         .rounded(Theme::radius_md())
                         .bg(theme.accent)
-                        .flex_center()
+                        .self_center()
                         .on_state(move |_ctx| {
                             div()
                                 .bg(match _ctx.state() {
@@ -104,7 +104,7 @@ pub fn welcome_screen(ctx: &WindowedContext) -> impl ElementBuilder {
                                 .w_full()
                                 .h_full()
                                 .rounded(Theme::radius_md())
-                                .flex_center()
+                                .self_center()
                                 .child(
                                     text(t(lang, TranslationKey::CreateAccount))
                                         .size(16.0)
@@ -126,7 +126,7 @@ pub fn welcome_screen(ctx: &WindowedContext) -> impl ElementBuilder {
                         .h(54.0)
                         .rounded(Theme::radius_md())
                         .border(1.5, theme.border_strong)
-                        .flex_center()
+                        .self_center()
                         .on_click(move |_| {
                             app_state.update(|mut s| {
                                 s.current_route = Route::Login;

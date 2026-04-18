@@ -49,3 +49,7 @@ rust_decimal = { version = "1", features = ["serde-with-str"] }
 [dev-dependencies]
 axum-test = "14"
 tokio-test = "0.4"
+
+[build-dependencies]
+tonic-build = "0.12"
+prost-build = "0.13"

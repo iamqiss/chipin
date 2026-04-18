@@ -2,6 +2,7 @@
 members = [
     "motherlode",
     "speedcrime",
+    "bigfinance",
 ]
 resolver = "2"
 

@@ -1,0 +1,60 @@
+[package]
+name        = "bigfinance"
+version     = "0.1.0"
+edition     = "2021"
+description = "chipin DeFi yield + multi-currency + fee engine"
+
+[lib]
+name = "bigfinance"
+path = "src/lib.rs"
+
+[[bin]]
+name = "bigfinance"
+path = "src/main.rs"
+
+[dependencies]
+# Async
+tokio        = { version = "1", features = ["full"] }
+
+# gRPC — talks to motherlode and DeFi protocols
+tonic        = { version = "0.12", features = ["transport"] }
+prost        = "0.13"
+prost-types  = "0.13"
+
+# Decimal arithmetic — NEVER use f64 for money
+rust_decimal = { version = "1", features = ["serde-with-str", "maths"] }
+rust_decimal_macros = "1"
+
+# Serialization
+serde        = { version = "1", features = ["derive"] }
+serde_json   = "1"
+
+# HTTP client — price feeds, DeFi APIs
+reqwest      = { version = "0.11", features = ["json", "rustls-tls"] }
+
+# Error handling
+anyhow       = "1"
+thiserror    = "1"
+
+# Logging
+tracing      = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+
+# Date / time
+chrono       = { version = "0.4", features = ["serde"] }
+
+# Config
+dotenvy      = "0.15"
+
+# Cache (rate feeds cached here, not in motherlode)
+redis        = { version = "0.25", features = ["tokio-comp", "connection-manager"] }
+
+# UUID
+uuid         = { version = "1", features = ["v4", "serde"] }
+
+[build-dependencies]
+tonic-build  = "0.12"
+prost-build  = "0.13"
+
+[dev-dependencies]
+tokio-test   = "0.4"

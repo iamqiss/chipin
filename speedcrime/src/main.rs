@@ -29,5 +29,5 @@ fn main() -> anyhow::Result<()> {
         ..Default::default()
     };
 
-    WindowedApp::run(config, |ctx| root_view(ctx))
+    Ok(WindowedApp::run(config, |ctx| root_view(ctx))?)
 }

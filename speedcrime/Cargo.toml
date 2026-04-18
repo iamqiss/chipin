@@ -13,6 +13,8 @@ path = "src/main.rs"
 blinc_app      = { version = "0.1", features = ["windowed", "android"] }
 blinc_layout   = "0.1"
 blinc_animation = "0.1"
+tonic   = { version = "0.12", features = ["transport"] }
+prost   = "0.13"
 
 # Async runtime
 tokio          = { version = "1", features = ["full"] }
@@ -43,6 +45,11 @@ uuid           = { version = "1", features = ["v4"] }
 
 # Date/time
 chrono         = { version = "0.4", features = ["serde"] }
+tonic-build = "0.14.5"
 
 [dev-dependencies]
 tokio-test = "0.4"
+
+[build-dependencies]
+tonic-build = "0.12"
+prost-build = "0.13"
