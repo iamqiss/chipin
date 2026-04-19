@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="logo.png" alt="chipin logo" height=120/>
+<img src="logo.png" alt="chipin logo" height=150/>
 
 # chipin
 
